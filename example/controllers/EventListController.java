@@ -10,85 +10,76 @@ import views.EventListView;
 
 
 /**
- * Responsible for {@link EventListView} behavior.
+ * Responsible for EventListView behavior.
  */
-public class EventListController extends Controller 
+public class EventListController extends Controller
 {
 	//-----------------------------------------------------------------------
-	//		Attributes
+	//    Attributes
 	//-----------------------------------------------------------------------
 	private EventListView eventListView;
 	private JTable table;
-	
-	
+
+
 	//-----------------------------------------------------------------------
-	//		Methods
+	//    Methods
 	//-----------------------------------------------------------------------
 	@Override
-	public void run() 
+	public void run()
 	{
 		table = new JTable(getDataColumns(), getNameColumns());
 		eventListView = new EventListView(this, table);
 	}
-	
+
 	/**
-	 * Adds a new row in a {@link JTable} with the values informed.
-	 * 
-	 * @param values Values to be add in {@link JTable}
+	 * Adds a new row in the JTable.
 	 */
-	public void addNewRow(Object[] values) 
+	public void addNewRow(Object[] values)
 	{
 		((DefaultTableModel) table.getModel()).addRow(values);
 	}
-	
-	
-	//-----------------------------------------------------------------------
-	//		Getters
-	//-----------------------------------------------------------------------
+
 	/**
-	 * Gets the {@link EventListView view associated with this controller}.
-	 * 
-	 * @return View associated with this controller
+	 * Removes a row from the JTable by index (0-based).
+	 * NUEVO: necesario para RemoveEventView
 	 */
+	public void removeRow(int rowIndex)
+	{
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		if (rowIndex < 0 || rowIndex >= model.getRowCount()) {
+			throw new IllegalArgumentException("Fila inválida: " + (rowIndex + 1));
+		}
+		model.removeRow(rowIndex);
+	}
+
+
+	//-----------------------------------------------------------------------
+	//    Getters
+	//-----------------------------------------------------------------------
 	public EventListView getView()
 	{
 		return eventListView;
 	}
-	
-	/**
-	 * Returns the names of the columns of the events list.
-	 * 
-	 * @return Table metadata in a list
-	 */
-	public Vector<String> getNameColumns() 
+
+	public Vector<String> getNameColumns()
 	{
 		Vector<String> nameColumns = new Vector<String>();
-		
 		nameColumns.add("Date");
 		nameColumns.add("Description");
 		nameColumns.add("Frequency");
 		nameColumns.add("E-mail");
 		nameColumns.add("Alarm");
-		nameColumns.add("Invitado");
-		
 		return nameColumns;
 	}
-	
-	/**
-	 * Returns events list data.
-	 * 
-	 * @return Table data in a list of lists (matrix)
-	 */
-	public Vector<Vector<Object>> getDataColumns() 
+
+	public Vector<Vector<Object>> getDataColumns()
 	{
 		Vector<Vector<Object>> dataColumns = null;
-
 		try {
 			SchedulerIO schedulerIO = new SchedulerIO();
 			schedulerIO.attach(eventListView);
 			dataColumns = schedulerIO.getEvents();
 		} catch (Exception ex) { }
-
 		return dataColumns;
 	}
 }
