@@ -7,13 +7,15 @@ import models.SchedulerEvent;
 import models.SchedulerIO;
 import views.EventListView;
 import views.NewEventView;
-
+import java.util.ArrayList;
+import models.Evento;
 
 /**
  * Responsible for {@link NewEventView} behavior.
  */
 public class NewEventController extends Controller 
 {
+	private ArrayList<Evento> listaEventos = new ArrayList<>();
 	//-----------------------------------------------------------------------
 	//		Attributes
 	//-----------------------------------------------------------------------
